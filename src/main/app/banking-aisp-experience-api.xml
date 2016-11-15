@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <context:property-placeholder location="common.properties, mule.${mule.env}.properties" />
+    <http:listener-config name="banking-aisp-experience-api-httpListenerConfig" host="0.0.0.0" port="${https.port}" doc:name="HTTP Listener Configuration" protocol="HTTPS">
+        <tls:context>
+            <tls:key-store type="jks" path="${keystore.location}" alias="${key.alias}" keyPassword="${key.password}" password="${keystore.password}"/>
+        </tls:context>
+    </http:listener-config>
+    <apikit:config name="banking-aisp-experience-api-config" raml="banking-aisp-experience-api.raml" consoleEnabled="false" doc:name="Router"/>
+    <http:request-config name="banking-accounts-process-api" host="${api.banking.accounts.host}" port="${api.banking.accounts.port}" basePath="${api.banking.accounts.basepath}" doc:name="HTTP Request Configuration">
+        <http:raml-api-configuration location="banking-accounts-process-api/template-banking-accounts-process-api.raml"/>
+    </http:request-config>
+    <flow name="banking-aisp-experience-api-main">
+        <http:listener config-ref="banking-aisp-experience-api-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
+        <apikit:router config-ref="banking-aisp-experience-api-config" doc:name="APIkit Router"/>
+        <exception-strategy ref="banking-aisp-experience-api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="banking-aisp-experience-api-console">
+        <http:listener config-ref="banking-aisp-experience-api-httpListenerConfig" path="/console/*" doc:name="HTTP"/>
+        <apikit:console config-ref="banking-aisp-experience-api-config" doc:name="APIkit Console"/>
+    </flow>
+    <flow name="get:/balance:banking-aisp-experience-api-config">
+        <set-variable variableName="ssn" value="124-123-12344" doc:name="set ssn variable"/>
+        <http:request config-ref="banking-accounts-process-api" path="/accounts/aggregate" method="GET" doc:name="get aggregated Accounts">
+            <http:request-builder>
+                <http:query-param paramName="ssn" value="#[flowVars.ssn]"/>
+            </http:request-builder>
+        </http:request>
+        <dw:transform-message doc:name="Create JSON response">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map {
+  number: $.number,
+  currency: $.balance.currency,
+  balance: $.balance.amount,
+  available: $.available_balance.amount
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="The GET balance process has finished" level="INFO" doc:name="Log success"/>
+
+    </flow>
+    <flow name="get:/info:banking-aisp-experience-api-config">
+        <set-variable variableName="ssn" value="124-123-12344" doc:name="set ssn variable"/>
+        <http:request config-ref="banking-accounts-process-api" path="/accounts/aggregate" method="GET" doc:name="get aggregated Accounts">
+            <http:request-builder>
+                <http:query-param paramName="ssn" value="#[flowVars.ssn]"/>
+            </http:request-builder>
+        </http:request>
+        <dw:transform-message doc:name="Create JSON response">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map {
+  id: $.id,
+  label: $.label,
+  number: $.number,
+  currency: $.balance.currency,
+  type: $.type,
+  owners: $.owners,
+  IBAN: $.IBAN,
+  overdraft: $.overdraft,
+  bank_id: $.bank_id,
+  created_at: $.created_at,
+  updated_at: $.updated_at
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="The GET info process has finished" level="INFO" doc:name="Log success"/>
+
+    </flow>
+    <flow name="get:/transactions:banking-aisp-experience-api-config">
+        <set-variable doc:name="set ssn variable" value="124-123-12344" variableName="ssn"/>
+        <http:request config-ref="banking-accounts-process-api" path="/transactions/aggregate" method="GET" doc:name="get aggregated Transactions">
+            <http:request-builder>
+                <http:query-param paramName="ssn" value="#[flowVars.ssn]"/>
+            </http:request-builder>
+        </http:request>
+        <dw:transform-message doc:name="Create JSON response">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map {
+  id: $.id,
+  account_id: $.this_account.id,
+  type: $.details.type,
+  description: $.details.label,
+  posted: $.details.posted,
+  completed: $.details.completed,
+  amount: $.details.value.amount,
+  currency: $.details.value.currency
+}
+]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="The GET transactions process has finished" level="INFO" doc:name="Log success"/>
+
+    </flow>
+    <apikit:mapping-exception-strategy name="banking-aisp-experience-api-apiKitGlobalExceptionMapping">
+        <apikit:mapping statusCode="404">
+            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="405">
+            <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="415">
+            <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="406">
+            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="400">
+            <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+    </apikit:mapping-exception-strategy>
+</mule>
