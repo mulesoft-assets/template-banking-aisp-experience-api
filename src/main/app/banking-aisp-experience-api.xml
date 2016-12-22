@@ -21,7 +21,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
     
     <apikit:config name="banking-aisp-experience-api-config" raml="banking-aisp-experience-api.raml" consoleEnabled="false" doc:name="Router"/>
    
-	<http:request-config name="banking-accounts-process-api" host="${api.banking.accounts.host}" port="${api.banking.accounts.port}" basePath="${api.banking.accounts.basepath}" doc:name="HTTP Request Configuration">
+	<http:request-config name="banking-accounts-process-api" protocol="HTTP" host="${api.banking.accounts.host}" port="${api.banking.accounts.port}" basePath="${api.banking.accounts.basepath}" doc:name="HTTP Request Configuration">
         <http:raml-api-configuration location="banking-accounts-process-api/template-banking-accounts-process-api.raml"/>
     </http:request-config>
     
@@ -47,10 +47,12 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 %output application/json
 ---
 payload map {
-  number: $.number,
-  currency: $.balance.currency,
-  balance: $.balance.amount,
-  available: $.available_balance.amount
+  	id        : $.id,
+  	number    : $.number,
+  	account_id: $.id,
+  	currency  : $.balance.currency,
+  	balance   : $.balance.amount,
+  	available : $.available_balance.amount
 }]]></dw:set-payload>
         </dw:transform-message>
         <logger message="The GET balance process has finished" level="INFO" doc:name="Log success"/>
@@ -67,17 +69,17 @@ payload map {
 %output application/json
 ---
 payload map {
-  id: $.id,
-  label: $.label,
-  number: $.number,
-  currency: $.balance.currency,
-  type: $.type,
-  owners: $.owners,
-  IBAN: $.IBAN,
-  overdraft: $.overdraft,
-  bank_id: $.bank_id,
-  created_at: $.created_at,
-  updated_at: $.updated_at
+  id         : $.id,
+  label      : $.label,
+  number     : $.number,
+  currency   : $.balance.currency,
+  type       : $.type,
+  owners     : $.owners,
+  IBAN       : $.IBAN,
+  overdraft  : $.overdraft,
+  bank_id    : $.bank_id,
+  created_at : $.created_at,
+  updated_at : $.updated_at
 }]]></dw:set-payload>
         </dw:transform-message>
         <logger message="The GET info process has finished" level="INFO" doc:name="Log success"/>
@@ -95,14 +97,15 @@ payload map {
 %output application/json
 ---
 payload map {
-  id: $.id,
-  account_id: $.this_account.id,
-  type: $.details.type,
-  description: $.details.label,
-  posted: $.details.posted,
-  completed: $.details.completed,
-  amount: $.details.value.amount,
-  currency: $.details.value.currency
+  id          : $.id,
+  account_id  : $.this_account.id,
+  type        : $.details.type,
+  description : $.details.label,
+  posted      : $.details.posted,
+  completed   : $.details.completed,
+  amount      : $.details.value.amount,
+  currency    : $.details.value.currency,
+  new_balance : $.details.new_balance.amount
 }
 ]]></dw:set-payload>
         </dw:transform-message>
