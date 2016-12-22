@@ -87,7 +87,8 @@ Anypoint Studio provides you with really easy way to deploy your Template direct
 When a Mule application is deployed using the Mule 3.8.2+ Runtime, the API Manager allows you to dynamically apply different policies that can be used for securing the application, among many other things. More information can be found in [API Manager policies documentation](https://docs.mulesoft.com/api-manager/using-policies)
 
 ## Properties to be configured (With examples) <a name="propertiestobeconfigured"/>
-In order to use this Mule Anypoint Template you need to configure properties (Credentials, configurations, etc.) either in properties file or in CloudHub as Environment Variables. It's necessary to register your Banking Experience API to desired Bank to obtain client_id, client_secret and endpoind URIs.    
+In order to use this Mule Anypoint Template you need to configure properties (Credentials, configurations, etc.) either in properties file or in CloudHub as Environment Variables. 
+
 Detailed list with examples:
 ### Application properties
 
