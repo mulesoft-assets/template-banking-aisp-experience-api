@@ -30,11 +30,15 @@ This Experience API is meant to be deployed to CloudHub and managed using the AP
 
 In order to retrieve the information, the third party application must be first registered with the bank's authorization server (AS) when it receives client_id and client_secret.
 The user selects the bank which he/she wants to add access to the application and user is redirected to the bank AS OAuth 2 authorize endpoint to verify user's identity.
-When user is successfully authenticated, the AS receives authorization code which it can use to obtain the access token. With possession of access token, the application can make requests
+When user is successfully authenticated, the application receives authorization code which it can use to obtain the access token. With possession of access token, the application can make requests
 on user's behalf to obtain account information until the token is valid. The token is in JWT form and it is signed and encrypted.
 
 In order to use this API, you must apply and configure [Oauth 2.0 JWE access token enforcement policy](https://github.com/mulesoft/template-banking-authorization-policy)
 Follow the instructions on the above link on how to configure the policy.
+
+
+
+This API consumes [Accounts Process API](https://github.com/mulesoft/template-banking-accounts-process-api). The Accounts Process API is secured by Client ID Enforcement policy so when making calls to it, this API needs to authenticate itself (HTTP Basic Authentication). You must register this API via API Manager to get credentials (client_id and client_secret) as described [here](https://docs.mulesoft.com/api-manager/browsing-and-accessing-apis). 
 
 ### Exposing external endpoints with HTTPS
 + It is meant to be consumed by third party applications using HTTPS
