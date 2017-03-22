@@ -1,14 +1,15 @@
 #%RAML 1.0
 title: Banking AISP Experience API
 version: v1
-baseUri: https://localhost:8082/api/accounts
+baseUri: https://localhost:8082/api
 mediaType: application/json
 protocols: HTTPS
 
 types: !include dataTypes.raml
-#securitySchemes: !include securitySchemes.raml
-#securedBy: [oauth_2_0]
- 
+securitySchemes: !include securitySchemes.raml
+securedBy: [oauth_2_0]
+
+
 /info:      
   displayName: Accounts information
   get:
@@ -18,7 +19,7 @@ types: !include dataTypes.raml
         body:
           application/json: 
             type: account[]
-            example: !include examples/info-response.json
+            example: !include examples/info-response.json 
               
 /transactions:
   displayName: Accounts transactions

@@ -1,27 +1,19 @@
 currency:
-  type: string
-  enum: [USD, EUR, CHF, GBP, CZK, PLN, HUF, HRK, BGN, SEK, RON, DKK]
+    enum: [USD, EUR, CHF, GBP, CZK, PLN, HUF, HRK, BGN, SEK, RON, DKK]
 
 amount:
-  type: number
-  format: double
-
-unixTimestamp:
-  type: number
-  format: long
-  example: 1475239204
+  pattern: ^[-+]?[0-9]*\.?[0-9]+$
 
 transactionType:
-  type: string
   enum: [atm, charge, check, deposit, online, pos, sepa_direct_transfer, withdrawal]
 
 accountBalance:
-  type: object
   properties:
     number: string
     currency: currency
     balance: amount
     available: amount
+    account_id: string
 
 owner: 
   properties:
@@ -30,7 +22,6 @@ owner:
     display_name: string
 
 account:
-  type: object
   properties:
     id: string
     label: string
@@ -46,7 +37,6 @@ account:
     updated_at: datetime
 
 accountTransaction:
-  type: object
   properties:
     id: string
     account_id: string
@@ -56,3 +46,4 @@ accountTransaction:
     completed: datetime
     amount: amount
     currency: currency
+    new_balance: amount
