@@ -44,6 +44,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
             </http:request-builder>
         </http:request>
         <dw:transform-message doc:name="Create JSON response">
+        	<dw:input-payload mimeType="application/json"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
@@ -66,6 +67,7 @@ payload map {
             </http:request-builder>
         </http:request>
         <dw:transform-message doc:name="Create JSON response">
+        <dw:input-payload mimeType="application/json"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
@@ -94,6 +96,7 @@ payload map {
             </http:request-builder>
         </http:request>
         <dw:transform-message doc:name="Create JSON response">
+        <dw:input-payload mimeType="application/json"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
