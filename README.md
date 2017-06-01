@@ -115,3 +115,6 @@ Detailed list with examples:
 + api.banking.accounts.port `443` 
 + api.banking.accounts.basepath `/api`
 
+#### Client ID Enforcement Policy for Anypoint Bank Process API
+api.banking.accounts.client_id `client_id`
+api.banking.accounts.client_secret `client_secret`
