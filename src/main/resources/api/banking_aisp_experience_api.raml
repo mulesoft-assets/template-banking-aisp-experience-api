@@ -1,0 +1,46 @@
+#%RAML 1.0
+title: Banking_AISP_Experience_API
+version: v2
+baseUri: http://localhost:8081/api/
+mediaType: application/json
+protocols: [HTTPS]
+
+securitySchemes:
+  oauth2_0: !include securityScheme.raml
+securedBy: oauth2_0 
+
+uses: 
+  aisp: ./dataTypes.raml
+
+/info:      
+  get:
+    description: Retrieves information about the accounts authorized by the Customer.
+    displayName: Get accounts information
+    responses:
+      200:
+        body:
+          application/json: 
+            type: aisp.AccountAISP[]
+            example: !include examples/info-response.raml 
+              
+/transactions:
+  get:
+    description: Retrieves transactions for the accounts authorized by the Customer.
+    displayName: Get accounts transactions
+    responses:
+      200:
+        body:
+          application/json:           
+            type: aisp.AccountTransaction[]
+            example: !include examples/transactions-response.raml
+
+/balance:
+  get:
+    description: Retrieves balances for the accounts authorized by the Customer.
+    displayName: Get accounts balance
+    responses:
+      200:
+        body:
+          application/json:
+            type: aisp.AccountBalanceAISP[]
+            example: !include examples/balance-response.raml

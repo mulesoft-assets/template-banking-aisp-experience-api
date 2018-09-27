@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:banking-accounts-process-api="http://www.mulesoft.org/schema/mule/banking-accounts-process-api"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/banking-accounts-process-api http://www.mulesoft.org/schema/mule/banking-accounts-process-api/current/mule-banking-accounts-process-api.xsd">
+	<flow name="getInfoFlow" doc:id="eed2efa5-db1c-40de-93a8-079e623056f6">
+		<banking-accounts-process-api:aggregate-user-accounts
+			doc:name="Get accounts info" doc:id="34c69115-65b0-481d-9ed0-01d85bc991d0"
+			config-ref="Banking_Accounts_Process_API_Config" ssn="#[vars.claims.ssn]" />
+		<ee:transform doc:name="Process accounts info" doc:id="38c97a43-da42-4fe8-8815-a001a7b1adf3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+  id         : $.id,
+  label      : $.label,
+  number     : $.number,
+  "type"     : $."type",
+  currency   : $.balance.currency,
+  owners     : $.owners,
+  IBAN       : $.IBAN,
+  overdraft  : $.overdraft,
+  bank_id    : $.bank_id,
+  created_at : $.created_at,
+  updated_at : $.updated_at
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getTransactionsFlow" doc:id="ebf40893-fa85-4e22-afa1-b3af27db40a0" >
+		<banking-accounts-process-api:aggregate-user-transactions doc:name="Get Transactions" doc:id="ed0c0d3e-fcbc-4981-b9c1-755d3b57ba54" config-ref="Banking_Accounts_Process_API_Config" ssn="#[vars.claims.ssn]"/>
+		<ee:transform doc:name="Process transactions info" doc:id="213a40c8-2102-4ed7-bbdc-39b1b71cae6b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+  id          : $.id,
+  account_id  : $.this_account.id,
+  "type"        : $.details."type",
+  description : $.details.label,
+  posted      : $.details.posted,
+  completed   : $.details.completed,
+  value       : $.details.value,
+  new_balance : $.details.new_balance
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getBalanceFlow" doc:id="0831a7fd-1ebf-4ba4-9ec6-ff400803b807" >
+		<banking-accounts-process-api:aggregate-user-accounts doc:name="Get balances" doc:id="386c3ee8-df0b-419f-a1bd-fa33a5d97efb" config-ref="Banking_Accounts_Process_API_Config" ssn="#[vars.claims.ssn]"/>
+		<ee:transform doc:name="Process balances" doc:id="fdb6e59a-19b5-4437-89ae-d59a264a0aa8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+  	id        : $.id,
+  	number    : $.number,
+  	balance   : $.balance,
+  	available_balance : $.available_balance
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
