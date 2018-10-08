@@ -145,9 +145,9 @@ output application/json
 		</error-handler>
 	</flow>
 	<flow name="get:\balance:banking_aisp_experience_api-config">
-		<choice doc:name="Need to mock claims?" doc:id="3f3e46d9-d283-4f99-9354-cf2260cb475e">
+		<choice doc:name="Parameters check" doc:id="3f3e46d9-d283-4f99-9354-cf2260cb475e">
 			<when expression="#[vars.claims == null]">
-				<ee:transform doc:name="Mocking claims"
+				<ee:transform doc:name="Setting claims"
 					doc:id="afd3f267-18df-4a22-991c-b1c26d06681b">
 					<ee:message>
 					</ee:message>
@@ -161,7 +161,7 @@ output application/java
 					</ee:variables>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger"
-					doc:id="2235012d-e975-4284-a810-dae0a5a475ad" message="Claims were mocked" />
+					doc:id="2235012d-e975-4284-a810-dae0a5a475ad" message="Claims were set" />
 			</when>
 			<otherwise>
 				<logger level="INFO" doc:name="Logger"
@@ -172,9 +172,9 @@ output application/java
 			name="getBalanceFlow" />
 	</flow>
 	<flow name="get:\info:banking_aisp_experience_api-config">
-		<choice doc:name="Need to mock claims?" doc:id="eddf8886-a3ff-4046-a2e4-298c1f0323a8">
+		<choice doc:name="Parameters check" doc:id="eddf8886-a3ff-4046-a2e4-298c1f0323a8">
 			<when expression="#[vars.claims == null]">
-				<ee:transform doc:name="Mocking claims"
+				<ee:transform doc:name="Setting claims"
 					doc:id="b1c22dc4-ef52-4f85-8c93-40305f5fc947">
 					<ee:message />
 					<ee:variables>
@@ -187,7 +187,7 @@ output application/java
 					</ee:variables>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger"
-					doc:id="a7732253-60fa-4a5f-815b-8d47646a5f00" message="Claims were mocked" />
+					doc:id="a7732253-60fa-4a5f-815b-8d47646a5f00" message="Claims were set" />
 			</when>
 			<otherwise>
 				<logger level="INFO" doc:name="Logger"
@@ -198,9 +198,9 @@ output application/java
 			name="getInfoFlow" />
 	</flow>
 	<flow name="get:\transactions:banking_aisp_experience_api-config">
-		<choice doc:name="Need to mock claims?" doc:id="7fd9c390-1550-4870-897b-26a99f06b63b">
+		<choice doc:name="Parameters check" doc:id="7fd9c390-1550-4870-897b-26a99f06b63b">
 			<when expression="#[vars.claims == null]">
-				<ee:transform doc:name="Mocking claims"
+				<ee:transform doc:name="Setting claims"
 					doc:id="20cf0691-b081-4747-bf96-8e5222dd127b">
 					<ee:message />
 					<ee:variables>
@@ -213,7 +213,7 @@ output application/java
 					</ee:variables>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger"
-					doc:id="d1e975d7-f5f0-49c9-b5ca-7ec94f55d204" message="Claims were mocked" />
+					doc:id="d1e975d7-f5f0-49c9-b5ca-7ec94f55d204" message="Claims were set" />
 			</when>
 			<otherwise>
 				<logger level="INFO" doc:name="Logger"
