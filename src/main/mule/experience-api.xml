@@ -145,10 +145,7 @@ output application/json
 		</error-handler>
 	</flow>
 	<flow name="get:\balance:banking_aisp_experience_api-config">
-		<choice doc:name="Parameters check" doc:id="3f3e46d9-d283-4f99-9354-cf2260cb475e">
-			<when expression="#[vars.claims == null]">
-				<ee:transform doc:name="Setting claims"
-					doc:id="afd3f267-18df-4a22-991c-b1c26d06681b">
+		<ee:transform doc:name="Setting claims" doc:id="afd3f267-18df-4a22-991c-b1c26d06681b">
 					<ee:message>
 					</ee:message>
 					<ee:variables>
@@ -156,70 +153,40 @@ output application/json
 output application/java
 ---
 {
-	ssn: p('claim.ssn')
+	ssn: attributes.headers.ssn
 }]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger"
-					doc:id="2235012d-e975-4284-a810-dae0a5a475ad" message="Claims were set" />
-			</when>
-			<otherwise>
-				<logger level="INFO" doc:name="Logger"
-					doc:id="e74aff5b-ba84-4202-9322-4f53a82ed170" message="Claims are set" />
-			</otherwise>
-		</choice>
 		<flow-ref doc:name="Call getBalanceFlow" doc:id="97732fc4-39c6-45d1-8740-6eb1a30db5a8"
 			name="getBalanceFlow" />
 	</flow>
 	<flow name="get:\info:banking_aisp_experience_api-config">
-		<choice doc:name="Parameters check" doc:id="eddf8886-a3ff-4046-a2e4-298c1f0323a8">
-			<when expression="#[vars.claims == null]">
-				<ee:transform doc:name="Setting claims"
-					doc:id="b1c22dc4-ef52-4f85-8c93-40305f5fc947">
-					<ee:message />
-					<ee:variables>
-						<ee:set-variable variableName="claims"><![CDATA[%dw 2.0
+		<ee:transform doc:name="Setting claims" doc:id="d97cd680-7d8f-4b0e-9c55-afbb6185fe38">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="claims"><![CDATA[%dw 2.0
 output application/java
 ---
 {
-	ssn: p('claim.ssn')
+	ssn: attributes.headers.ssn
 }]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-				<logger level="INFO" doc:name="Logger"
-					doc:id="a7732253-60fa-4a5f-815b-8d47646a5f00" message="Claims were set" />
-			</when>
-			<otherwise>
-				<logger level="INFO" doc:name="Logger"
-					doc:id="e19a82e1-0d45-4dce-b07d-514210f533d1" message="Claims are set" />
-			</otherwise>
-		</choice>
+			</ee:variables>
+		</ee:transform>
 		<flow-ref doc:name="Call getInfoFlow" doc:id="e173198a-601e-49d8-b0f6-29cfdda591a4"
 			name="getInfoFlow" />
 	</flow>
 	<flow name="get:\transactions:banking_aisp_experience_api-config">
-		<choice doc:name="Parameters check" doc:id="7fd9c390-1550-4870-897b-26a99f06b63b">
-			<when expression="#[vars.claims == null]">
-				<ee:transform doc:name="Setting claims"
-					doc:id="20cf0691-b081-4747-bf96-8e5222dd127b">
-					<ee:message />
-					<ee:variables>
-						<ee:set-variable variableName="claims"><![CDATA[%dw 2.0
+		<ee:transform doc:name="Setting claims" doc:id="3b29faa0-1fa6-487e-9800-b7c10fde9f42">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="claims"><![CDATA[%dw 2.0
 output application/java
 ---
 {
-	ssn: p('claim.ssn')
+	ssn: attributes.headers.ssn
 }]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-				<logger level="INFO" doc:name="Logger"
-					doc:id="d1e975d7-f5f0-49c9-b5ca-7ec94f55d204" message="Claims were set" />
-			</when>
-			<otherwise>
-				<logger level="INFO" doc:name="Logger"
-					doc:id="ca245ebd-391f-4fec-b211-c428ca613d9d" message="Claims are set" />
-			</otherwise>
-		</choice>
+			</ee:variables>
+		</ee:transform>
 		<flow-ref doc:name="Call getTransactionsFlow" doc:id="5ab9642d-b26f-4ebb-88aa-5048b14764ec"
 			name="getTransactionsFlow" />
 	</flow>
