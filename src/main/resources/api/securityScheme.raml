@@ -1,19 +1,26 @@
 #%RAML 1.0 SecurityScheme
 type: OAuth 2.0
-description: |
-  Supports OAuth 2.0 for authenticating all API requests.
-describedBy:
+description: 
+describedBy: 
   headers:
     Authorization:
       description: |
-        Used to send a valid OAuth 2 / OpenID Connect access token.
+        Used to send a valid OAuth 2 access token. Do not use
+        with the "access_token" query string parameter.
       type: string
-  responses:
-    401:
+  queryParameters:
+    access_token:
       description: |
-        Bad or expired token. To fix, you should re-
-        authenticate the user.
-settings:
-  authorizationUri: https://example.com/api/authorize
-  accessTokenUri: https://example.com/api/token
-  authorizationGrants: [ authorization_code, implicit ]
+        Used to send a valid OAuth 2 access token. Do not use with
+        the "Authorization" header.
+      type: string
+  
+settings: 
+  authorizationUri: https://auth-server.example.io/api/authorize
+  accessTokenUri: https://auth-server.example.io/api/token
+  # customize the authorization grants depending on need
+  authorizationGrants: [authorization_code]
+  scopes: [READ]
+
+
+  

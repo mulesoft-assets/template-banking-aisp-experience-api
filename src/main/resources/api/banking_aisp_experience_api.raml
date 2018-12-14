@@ -6,12 +6,18 @@ mediaType: application/json
 protocols: [HTTPS]
 
 uses: 
-  aisp: ./dataTypes.raml
+  aisp: dataTypes.raml
 
-/info:      
+securitySchemes: 
+  oAuth_2_0: !include securityScheme.raml
+
+# Securing the API with Basic Authorization and OAuth 2.0
+securedBy: [oAuth_2_0]
+
+/info:
   get:
     description: Retrieves information about the accounts authorized by the Customer.
-    displayName: Get accounts information
+    displayName: Retrieve accounts information
     responses:
       200:
         body:
@@ -22,7 +28,7 @@ uses:
 /transactions:
   get:
     description: Retrieves transactions for the accounts authorized by the Customer.
-    displayName: Get accounts transactions
+    displayName: Retrieve accounts transactions
     responses:
       200:
         body:
@@ -33,7 +39,7 @@ uses:
 /balance:
   get:
     description: Retrieves balances for the accounts authorized by the Customer.
-    displayName: Get accounts balance
+    displayName: Retrieve accounts balance
     responses:
       200:
         body:
