@@ -23,7 +23,7 @@ securedBy: [oAuth_2_0]
         body:
           application/json: 
             type: aisp.AccountAISP[]
-            example: !include examples/info-response.raml 
+            example: !include examples/info-response.json 
               
 /transactions:
   get:
@@ -34,7 +34,7 @@ securedBy: [oAuth_2_0]
         body:
           application/json:           
             type: aisp.AccountTransaction[]
-            example: !include examples/transactions-response.raml
+            example: !include examples/transactions-response.json
 
 /balance:
   get:
@@ -45,4 +45,4 @@ securedBy: [oAuth_2_0]
         body:
           application/json:
             type: aisp.AccountBalanceAISP[]
-            example: !include examples/balance-response.raml
+            example: !include examples/balance-response.json
